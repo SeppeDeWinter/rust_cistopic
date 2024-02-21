@@ -42,15 +42,12 @@ pub fn sample_topics(
         nzw[w][z] -= 1.0;
         ndz[d][z] -= 1.0;
         nz[z]     -= 1.0;
-        dist_sum = (0..n_topics).map(|k| {
-            (nzw[w][k] + eta[w]) / (nz[k] + eta_sum) * (ndz[d][k] + alpha[k])
-        }).collect();
-        let mut acc = 0.0;
-        for x in &mut dist_sum {
-            acc += *x;
-            *x = acc;
+        let mut dist_cum: f64 = 0.0;
+        // run this in parallel?
+        for k in 0..n_topics {
+            dist_cum += (nzw[w][k] + eta[w]) / (nz[k] + eta_sum) * (ndz[d][k] + alpha[k]);
+            dist_sum.push(dist_cum);
         }
-        let dist_cum = dist_sum[n_topics - 1];
         let r = rands[i % n_rand] * dist_cum;
         let z_new = searchsorted(&dist_sum, n_topics, r);
         ZS[i] = z_new;
