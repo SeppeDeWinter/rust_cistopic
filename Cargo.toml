@@ -1,0 +1,12 @@
+[package]
+name = "rust_cistopic"
+version = "0.1.0"
+edition = "2021"
+authors = ["Seppe De Winter <seppe.dewinter@kuleuven.be>"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rust-htslib = { version = "0.45.0", default-features = false, features = ["libdeflate"] }
+npyz = "0.8.3"
+rand = "0.8.5"
