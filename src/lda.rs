@@ -1,10 +1,6 @@
 use ndarray::Array2;
 
-fn searchsorted(
-    arr: &Vec<f64>,
-    length: usize,
-    value: f64) -> usize 
-{
+fn searchsorted(arr: &[f64], length: usize, value: f64) -> usize {
     let mut imin = 0;
     let mut imax = length;
     while imin < imax {
@@ -19,16 +15,16 @@ fn searchsorted(
 }
 
 pub fn sample_topics(
-    WS: &Vec<usize>,
-    DS: &Vec<usize>,
-    ZS: &mut Vec<usize>,
+    WS: &[usize],
+    DS: &[usize],
+    ZS: &mut [usize],
     nzw: &mut Array2<f64>,
     ndz: &mut Array2<f64>,
-    nz: &mut Vec<f64>,
-    alpha: &Vec<f64>,
-    eta: &Vec<f64>,
-    rands: &Vec<f64>)
-{
+    nz: &mut [f64],
+    alpha: &[f64],
+    eta: &[f64],
+    rands: &[f64],
+) {
     // initialize variables
     let N = WS.len();
     let n_rand = rands.len();
