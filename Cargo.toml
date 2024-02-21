@@ -10,3 +10,11 @@ authors = ["Seppe De Winter <seppe.dewinter@kuleuven.be>"]
 rust-htslib = { version = "0.45.0", default-features = false, features = ["libdeflate"] }
 npyz = "0.8.3"
 rand = "0.8.5"
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
