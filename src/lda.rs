@@ -44,10 +44,12 @@ pub fn sample_topics(
         nz[z]     -= 1.0;
         dist_sum = (0..n_topics).map(|k| {
             (nzw[w][k] + eta[w]) / (nz[k] + eta_sum) * (ndz[d][k] + alpha[k])
-        }).scan(0.0, |state, x| {
-            *state += x;
-            Some(*state)
         }).collect();
+        let mut acc = 0.0;
+        for x in &mut dist_sum {
+            acc += *x;
+            *x = acc;
+        }
         let dist_cum = dist_sum[n_topics - 1];
         let r = rands[i % n_rand] * dist_cum;
         let z_new = searchsorted(&dist_sum, n_topics, r);
