@@ -31,11 +31,10 @@ pub fn sample_topics(
     let N                = WS.len();
     let n_rand           = rands.len();
     let n_topics         = nz.len();
-    let eta_sum:f64             = eta.iter().sum();
-    let mut dist_sum: Vec<f64>  = Vec::with_capacity(n_topics);
-
+    let eta_sum:f64 = eta.iter().sum();
     // actual algorithm
     for i in 0..N {
+        let mut dist_sum: Vec<f64>  = Vec::with_capacity(n_topics);
         let w = WS[i];
         let d = DS[i];
         let z = ZS[i];
