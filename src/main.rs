@@ -66,14 +66,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
     let bytes = std::fs::read("/staging/leuven/stg_00002/lcb/sdewin/PhD/rust_module/lda/WS.npy")?;
     let npy = npyz::NpyFile::new(&bytes[..])?;
     let mut WS: Vec<usize> = Vec::new();
-    for x in npy.data::<u32>()? {
+    for x in npy.data::<i32>()? {
         let x = x?;
         WS.push(x as usize);
     }
     let bytes = std::fs::read("/staging/leuven/stg_00002/lcb/sdewin/PhD/rust_module/lda/DS.npy")?;
     let npy = npyz::NpyFile::new(&bytes[..])?;
     let mut DS: Vec<usize> = Vec::new();
-    for x in npy.data::<u32>()? {
+    for x in npy.data::<i32>()? {
         let x = x?;
         DS.push(x as usize);
     }
