@@ -1,29 +1,29 @@
 mod lda;
 use npyz;
-use rand::Rng;
 use rand::seq::SliceRandom;
+use rand::Rng;
 use std::time::Instant;
 
 struct GenomicRegion {
     chromosome: String,
     start: usize,
-    end: usize
+    end: usize,
 }
 
-impl GenomicRegion{
+impl GenomicRegion {
     fn from_str(s: &str) -> GenomicRegion {
         let fields: Vec<&str> = s.split('\t').collect();
         GenomicRegion {
             chromosome: fields[0].to_string(),
             start: fields[1].parse().unwrap(),
-            end: fields[2].parse().unwrap()
+            end: fields[2].parse().unwrap(),
         }
     }
 }
 struct Fragment {
     region: GenomicRegion,
     cell_barcode: String,
-    score: Option<usize>
+    score: Option<usize>,
 }
 
 impl Fragment {
@@ -34,26 +34,26 @@ impl Fragment {
                 region: GenomicRegion {
                     chromosome: fields[0].to_string(),
                     start: fields[1].parse().unwrap(),
-                    end: fields[2].parse().unwrap()
+                    end: fields[2].parse().unwrap(),
                 },
                 cell_barcode: fields[3].to_string(),
-                score: None
+                score: None,
             },
             5 => Fragment {
                 region: GenomicRegion {
                     chromosome: fields[0].to_string(),
                     start: fields[1].parse().unwrap(),
-                    end: fields[2].parse().unwrap()
+                    end: fields[2].parse().unwrap(),
                 },
                 cell_barcode: fields[3].to_string(),
-                score: Some(fields[4].parse().unwrap())
+                score: Some(fields[4].parse().unwrap()),
             },
-            _ => panic!("Invalid number of fields")
+            _ => panic!("Invalid number of fields"),
         }
     }
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>>{
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Initializing variables ...");
     let D = 5_000;
     let W = 2_000_000;
@@ -88,7 +88,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
         nzw[w][z_new] += 1.0;
         nz[z_new] += 1.0;
     }
-    let mut rands: Vec<f64> = (0..131072).map(|_| rand::thread_rng().gen::<f64>()).collect();
+    let mut rands: Vec<f64> = (0..131072)
+        .map(|_| rand::thread_rng().gen::<f64>())
+        .collect();
     let alpha: Vec<f64> = vec![0.1; n_topics];
     let eta: Vec<f64> = vec![0.01; W];
     println!("Running LDA ...");
@@ -97,17 +99,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
     for _ in 0..n_iter {
         rands.shuffle(&mut rng);
         lda::sample_topics(
-            &WS,
-            &DS,
-            &mut ZS,
-            &mut nzw,
-            &mut ndz,
-            &mut nz,
-            &alpha,
-            &eta,
-            &rands
+            &WS, &DS, &mut ZS, &mut nzw, &mut ndz, &mut nz, &alpha, &eta, &rands,
         )
-    
     }
     let elapsed = now.elapsed();
     println!("Elapsed: {:.2?}", elapsed);
