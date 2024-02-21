@@ -2,6 +2,7 @@ mod lda;
 use npyz;
 use rand::Rng;
 use rand::seq::SliceRandom;
+use std::time::Instant;
 
 struct GenomicRegion {
     chromosome: String,
@@ -92,6 +93,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
     let eta: Vec<f64> = vec![0.01; W];
     println!("Running LDA ...");
     let mut rng = rand::thread_rng();
+    let now = Instant::now();
     for _ in 0..n_iter {
         rands.shuffle(&mut rng);
         lda::sample_topics(
@@ -105,7 +107,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
             &eta,
             &rands
         )
+    
     }
+    let elapsed = now.elapsed();
+    println!("Elapsed: {:.2?}", elapsed);
 
     Ok(())
 }
