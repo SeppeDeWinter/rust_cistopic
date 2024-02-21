@@ -43,13 +43,23 @@ pub fn sample_topics(
         nzw[[w, z]] -= 1.0;
         ndz[[d, z]] -= 1.0;
         nz[z] -= 1.0;
-        let mut dist_cum: f64 = 0.0;
+
         // run this in parallel?
         for k in 0..n_topics {
-            dist_cum += (nzw[[w, k]] + eta[w]) / (nz[k] + eta_sum) * (ndz[[d, k]] + alpha[k]);
-            dist_sum[k] = dist_cum;
+            dist_sum[k] = (nzw[[w, k]] + eta[w]) / (nz[k] + eta_sum) * (ndz[[d, k]] + alpha[k]);
         }
-        let r = rands[i % n_rand] * dist_cum;
+
+        // Calculating cumulative sum with into_iter will reuse the memory of dist_sum.
+        // See: https://users.rust-lang.org/t/inplace-cumulative-sum-using-iterator/56532/5
+        dist_sum = dist_sum
+            .into_iter()
+            .scan(0.0, |acc, x| {
+                *acc += x;
+                Some(*acc)
+            })
+            .collect();
+
+        let r = rands[i % n_rand] * dist_sum[n_topics - 1];
         let z_new = searchsorted(&dist_sum, n_topics, r);
         ZS[i] = z_new;
         nzw[[w, z_new]] += 1.0;
