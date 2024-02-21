@@ -1,4 +1,5 @@
 mod lda;
+use ndarray::Array;
 use npyz;
 use rand::seq::SliceRandom;
 use rand::Rng;
@@ -60,8 +61,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let N = 999_950;
     let n_topics = 50;
     let n_iter = 20;
-    let mut nzw = vec![vec![0.0; n_topics]; W];
-    let mut ndz = vec![vec![0.0; n_topics]; D];
+    let mut nzw = Array::<f64, _>::zeros((W, n_topics));
+    let mut ndz = Array::<f64, _>::zeros((D, n_topics));
     let mut nz = vec![0.0; n_topics];
     println!("Reading data ...");
     let bytes = std::fs::read("/staging/leuven/stg_00002/lcb/sdewin/PhD/rust_module/lda/WS.npy")?;
@@ -84,8 +85,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let d = DS[i];
         let z_new = i % n_topics;
         ZS[i] = z_new;
-        ndz[d][z_new] += 1.0;
-        nzw[w][z_new] += 1.0;
+        ndz[[d, z_new]] += 1.0;
+        nzw[[w, z_new]] += 1.0;
         nz[z_new] += 1.0;
     }
     let mut rands: Vec<f64> = (0..131072)
