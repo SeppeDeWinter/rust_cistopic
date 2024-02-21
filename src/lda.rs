@@ -42,7 +42,7 @@ pub fn sample_topics(
         nzw[w][z] -= 1.0;
         ndz[d][z] -= 1.0;
         nz[z]     -= 1.0;
-        let dist_sum: Vec<f64> = (0..n_topics).map(|k| {
+        dist_sum = (0..n_topics).map(|k| {
             (nzw[w][k] + eta[w]) / (nz[k] + eta_sum) * (ndz[d][k] + alpha[k])
         }).scan(0.0, |state, x| {
             *state += x;
