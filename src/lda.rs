@@ -30,13 +30,16 @@ pub fn sample_topics(
     rands: &Vec<f64>)
 {
     // initialize variables
-    let N                = WS.len();
-    let n_rand           = rands.len();
-    let n_topics         = nz.len();
-    let eta_sum:f64 = eta.iter().sum();
+    let N = WS.len();
+    let n_rand = rands.len();
+    let n_topics = nz.len();
+    let eta_sum: f64 = eta.iter().sum();
+
+    // create dist_sum as a Vec<f64> of length n_topics with zeros
+    let mut dist_sum: Vec<f64> = vec![0.0; n_topics];
+
     // actual algorithm
     for i in 0..N {
-        let mut dist_sum: Vec<f64>  = Vec::with_capacity(n_topics);
         let w = WS[i];
         let d = DS[i];
         let z = ZS[i];
@@ -48,7 +51,7 @@ pub fn sample_topics(
         // run this in parallel?
         for k in 0..n_topics {
             dist_cum += (nzw[[w, k]] + eta[w]) / (nz[k] + eta_sum) * (ndz[[d, k]] + alpha[k]);
-            dist_sum.push(dist_cum);
+            dist_sum[k] = dist_cum;
         }
         let r = rands[i % n_rand] * dist_cum;
         let z_new = searchsorted(&dist_sum, n_topics, r);
